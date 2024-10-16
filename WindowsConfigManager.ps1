@@ -12,11 +12,16 @@ $configFile = $ConfigFilePath, $ConfigFileName -join '/'
 $ConfigData = Get-ConfigParameters -ConfigFilePath $configFile
 
 # Set configuration variables based on the data retrieved from the config file
-Set-ConfigVariables -ConfigData $ConfigData
+Set-ConfigVariables -ConfigData $ConfigData -AppendSectionToVariableName $true
 
 # Convert values for several variables to ensure they are in the correct format
-$Task = Convert-Value -Value $Task
-$Verbose = Convert-Value -Value $Verbose
+# Configuration for microphone
+$MicrophoneTask = Convert-Value -Value $MicrophoneTask
+$MicrophoneVerbose = Convert-Value -Value $MicrophoneVerbose
+
+# Configuration for camera
+$CameraTask = Convert-Value -Value $CameraTask
+$CameraVerbose = Convert-Value -Value $CameraVerbose
 
 # Clear the console to make the output cleaner.
 Clear-Host
@@ -26,11 +31,11 @@ Write-Host `n "Microphone: " `n
 
 # Use the new function for the microphone
 $microphonePath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone"
-Set-AccessForItem -Path $microphonePath -Action $Task -Verbose $Verbose
+Set-AccessForItem -Path $microphonePath -Action $MicrophoneTask -Verbose $MicrophoneVerbose
 
-# Header for webcam section
-Write-Host `n "Webcam: " `n
+# Header for Camera section
+Write-Host `n "Camera: " `n
 
-# Use the new function for the webcam
-$webcamPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam"
-Set-AccessForItem -Path $webcamPath -Action $Task -Verbose $Verbose
+# Use the new function for the Camera
+$CameraPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam"
+Set-AccessForItem -Path $CameraPath -Action $CameraTask -Verbose $CameraVerbose
