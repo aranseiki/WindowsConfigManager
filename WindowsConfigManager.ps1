@@ -39,3 +39,4 @@ Write-Host `n "Camera: " `n
 # Use the new function for the Camera
 $CameraPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam"
 Set-AccessForItem -Path $CameraPath -Action $CameraTask -Verbose $CameraVerbose
+
