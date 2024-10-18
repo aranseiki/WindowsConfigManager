@@ -1,4 +1,4 @@
-﻿# Importing necessary modules for the script
+# Importing necessary modules for the script
 Import-Module "$PSScriptRoot/src/Confirm-Parameter.psm1" -Force
 Import-Module "$PSScriptRoot/src/Get-ConfigParameters.psm1" -Force
 Import-Module "$PSScriptRoot/src/Get-UtilityFunctions.psm1" -Force
@@ -30,8 +30,8 @@ $AssetsData = @(
         'AssetPath' = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone'
         'NotificationData' = @{
             'Title' = 'Configuration Changed'
-            'Message' = 'The microphone has been activated!'
-            'Icon' = "$env:SystemRoot\System32\shell32.dll"
+            'Message' = 'The microphone has been changed!'
+            'Icon' = 'C:\dev\projects\WindowsConfigManager\assets\information.ico'
         }
     },
     @{
@@ -39,8 +39,8 @@ $AssetsData = @(
         'AssetPath' = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam'
         'NotificationData' = @{
             'Title' = 'Configuration Changed'
-            'Message' = 'The camera has been activated!'
-            'Icon' = "$env:SystemRoot\System32\shell32.dll"
+            'Message' = 'The camera has been changed!'
+            'Icon' = 'C:\dev\projects\WindowsConfigManager\assets\information.ico'
         }
     }
 )
@@ -51,12 +51,12 @@ Clear-Host
 foreach ($CurrentAsset in $AssetsData) {
     $CurrentTask = $(Get-Variable -Include "$($CurrentAsset.Name)Task").Value
     $CurrentVerbose = $(Get-Variable -Include "$($CurrentAsset.Name)Verbose").Value
+    $IconPath = [string] $CurrentAsset.NotificationData.Icon
 
     # Header for microphone section
     Write-Host `n "$($CurrentAsset.Name): " `n
     $microphonePath = $CurrentAsset.AssetPath
     $CurrentAccessValue = Get-AccessPropertyItem -Path $microphonePath -Verbose $CurrentVerbose
-    $CurrentIconObj = [System.Drawing.Icon]::ExtractAssociatedIcon($CurrentAsset.NotificationData.Icon)
 
     if (
         (($CurrentAccessValue.ToUpper() -eq 'DENY') -and ($CurrentTask.ToUpper() -eq 'ALLOW')) -or
@@ -68,6 +68,6 @@ foreach ($CurrentAsset in $AssetsData) {
             -Title $CurrentAsset.NotificationData.Title `
             -Message $CurrentAsset.NotificationData.Message `
             -Duration 3000 `
-            -Icon $CurrentIconObj
+            -Icon $IconPath
     }
 }

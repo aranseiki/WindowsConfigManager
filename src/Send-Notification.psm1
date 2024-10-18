@@ -3,29 +3,33 @@
         [string]$Title,
         [string]$Message,
         [int]$Duration,
-        [System.Drawing.Icon]$Icon
+        [string]$IconPath
     )
-
+    
     try {
-        # Carregar o tipo necessário
+        # Carregar os tipos necessários
         Add-Type -AssemblyName System.Windows.Forms
+        Add-Type -AssemblyName System.Drawing
 
-        # Criar e configurar o ícone de notificação (usando variável estática)
-        if (-not $script:NotifyIcon) {
-            $script:NotifyIcon = New-Object System.Windows.Forms.NotifyIcon
-        }
-        
-        $script:NotifyIcon.Icon = $Icon
-        $script:NotifyIcon.BalloonTipTitle = $Title
-        $script:NotifyIcon.BalloonTipText = $Message
-        $script:NotifyIcon.Visible = $true
-        $script:NotifyIcon.ShowBalloonTip($Duration)
+        # Criar o NotifyIcon
+        $NotifyIcon = New-Object System.Windows.Forms.NotifyIcon
+
+        # Verificar se o ícone existe e carregá-lo corretamente
+        $NotifyIcon.Icon = New-Object System.Drawing.Icon($IconPath)
+
+        # Configurar o título e a mensagem da notificação
+        $NotifyIcon.BalloonTipTitle = $Title
+        $NotifyIcon.BalloonTipText = $Message
+        $NotifyIcon.Visible = $true
+
+        # Exibir a notificação
+        $NotifyIcon.ShowBalloonTip($Duration)
 
         # Esperar a duração da notificação
         Start-Sleep -Milliseconds $Duration
     } finally {
-        if ($script:NotifyIcon) {
-            $script:NotifyIcon.Dispose()
+        if ($NotifyIcon) {
+            $NotifyIcon.Dispose()
         }
     }
 }
