@@ -1,8 +1,8 @@
 ﻿# Importing necessary modules for the script
-Import-Module "$PSScriptRoot/src/Confirm-Parameter.psm1"
-Import-Module "$PSScriptRoot/src/Get-ConfigParameters.psm1"
-Import-Module "$PSScriptRoot/src/Get-UtilityFunctions.psm1"
-Import-Module "$PSScriptRoot/src/Manage-Access.psm1"
+Import-Module "$PSScriptRoot/src/Confirm-Parameter.psm1" -Force
+Import-Module "$PSScriptRoot/src/Get-ConfigParameters.psm1" -Force
+Import-Module "$PSScriptRoot/src/Get-UtilityFunctions.psm1" -Force
+Import-Module "$PSScriptRoot/src/Manage-Access.psm1" -Force
 
 # Configuration file path and filename for storing configuration settings
 $ConfigFilePath = "$PSScriptRoot/config"
