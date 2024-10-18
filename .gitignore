@@ -18,6 +18,7 @@ ehthumbs.db
 # Ignorar configurações específicas do usuário
 .vscode/
 *.user
+dev/
 
 # Ignorar arquivos de log
 *.log
