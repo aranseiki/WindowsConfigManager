@@ -12,7 +12,7 @@ $UserConfigFile = $UserConfigFilePath, $UserConfigFileName -join '/'
 
 # Configuration file path and filename for storing assets configuration settings
 $AssetsConfigFilePath = "$PSScriptRoot/config"
-$AssetsConfigFileName = 'AssetsConfig-WindowsConfigManager.ini'
+$AssetsConfigFileName = 'AssetsConfig-WindowsConfigManager.json'
 $AssetsConfigFile = $AssetsConfigFilePath, $AssetsConfigFileName -join '/'
 
 # Retrieves parameters from the configuration file using the imported function
