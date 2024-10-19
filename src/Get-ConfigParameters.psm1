@@ -84,6 +84,7 @@ function Set-ConfigVariables {
         [bool] $AppendSectionToVariableName = $false
     )
 
+    $VariableList = @()
     # Dynamic variable creation based on keys and values
     foreach ($Section in $ConfigData.Keys) {
         foreach ($Key in $ConfigData[$Section].Keys) {
@@ -99,8 +100,11 @@ function Set-ConfigVariables {
             $ConfigDataValue = $ConfigData[$Section][$Key]
             # Setting the variable value dynamically
             Set-Variable -Name $VariableName -Value $ConfigDataValue -Scope Global
+            $VariableList += $VariableName
         }
     }
+
+    return $VariableList
 }
 
 Export-ModuleMember -Function `
