@@ -90,12 +90,10 @@ function Set-ConfigVariables {
             # Simple variable name, just the key
             $VariableName = $Key
 
-            # Check if a variable with the simple name already exists
+            # Check if $AppendSectionToVariableName is enabled
             if ($AppendSectionToVariableName) {
-                if (Get-Variable -Name $VariableName -ErrorAction SilentlyContinue) {
-                    # If it exists, interpolate the name with the section
-                    $VariableName = $Section + $Key
-                }
+                # Add section name in the variable name
+                $VariableName = $Section + $Key
             }
 
             $ConfigDataValue = $ConfigData[$Section][$Key]
