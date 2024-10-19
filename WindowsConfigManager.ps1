@@ -1,73 +1,64 @@
-# Importing necessary modules for the script
+﻿# Importing necessary modules for the script
 Import-Module "$PSScriptRoot/src/Confirm-Parameter.psm1" -Force
 Import-Module "$PSScriptRoot/src/Get-ConfigParameters.psm1" -Force
 Import-Module "$PSScriptRoot/src/Get-UtilityFunctions.psm1" -Force
 Import-Module "$PSScriptRoot/src/Manage-Access.psm1" -Force
 Import-Module "$PSScriptRoot/src/Send-Notification.psm1" -Force
 
-# Configuration file path and filename for storing configuration settings
-$ConfigFilePath = "$PSScriptRoot/config"
-$ConfigFileName = 'Config-WindowsConfigManager.ini'
-$configFile = $ConfigFilePath, $ConfigFileName -join '/'
+# Configuration file path and filename for storing user configuration settings
+$UserConfigFilePath = "$PSScriptRoot/config"
+$UserConfigFileName = 'UserConfig-WindowsConfigManager.ini'
+$UserConfigFile = $UserConfigFilePath, $UserConfigFileName -join '/'
+
+# Configuration file path and filename for storing assets configuration settings
+$AssetsConfigFilePath = "$PSScriptRoot/config"
+$AssetsConfigFileName = 'AssetsConfig-WindowsConfigManager.ini'
+$AssetsConfigFile = $AssetsConfigFilePath, $AssetsConfigFileName -join '/'
+
 # Retrieves parameters from the configuration file using the imported function
-$ConfigData = Get-ConfigParameters -ConfigFilePath $configFile
+$UserConfigData = Get-ConfigParameters -ConfigFilePath $UserConfigFile
 
 # Set configuration variables based on the data retrieved from the config file
-Set-ConfigVariables -ConfigData $ConfigData -AppendSectionToVariableName $true
+$VariableList = Set-ConfigVariables -ConfigData $UserConfigData -AppendSectionToVariableName $true
 
-# Convert values for several variables to ensure they are in the correct format
-# Configuration for microphone
-$MicrophoneTask = Convert-Value -Value $MicrophoneTask
-$MicrophoneVerbose = Convert-Value -Value $MicrophoneVerbose
+foreach ($Variavel in $VariableList) {
+    # Convert values for several variables to ensure they are in the correct format
+    Set-Variable $Variavel -Value $(
+        Convert-Value (Get-Variable $Variavel).Value
+    )
+}
 
-# Configuration for camera
-$CameraTask = Convert-Value -Value $CameraTask
-$CameraVerbose = Convert-Value -Value $CameraVerbose
-
-$AssetsData = @(
-    @{
-        'Name' = 'Microphone'
-        'AssetPath' = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone'
-        'NotificationData' = @{
-            'Title' = 'Configuration Changed'
-            'Message' = 'The microphone has been changed!'
-            'Icon' = 'C:\dev\projects\WindowsConfigManager\assets\information.ico'
-        }
-    },
-    @{
-        'Name' = 'Camera'
-        'AssetPath' = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam'
-        'NotificationData' = @{
-            'Title' = 'Configuration Changed'
-            'Message' = 'The camera has been changed!'
-            'Icon' = 'C:\dev\projects\WindowsConfigManager\assets\information.ico'
-        }
-    }
-)
+# Retrieves parameters from the configuration file using the imported function
+$AssetsConfigData = Get-Content -Path $AssetsConfigFile -Raw | ConvertFrom-Json
 
 # Clear the console to make the output cleaner.
 Clear-Host
 
-foreach ($CurrentAsset in $AssetsData) {
-    $CurrentTask = $(Get-Variable -Include "$($CurrentAsset.Name)Task").Value
-    $CurrentVerbose = $(Get-Variable -Include "$($CurrentAsset.Name)Verbose").Value
-    $IconPath = [string] $CurrentAsset.NotificationData.Icon
+foreach ($CurrentAsset in $AssetsConfigData) {
+    try {
+        $CurrentTask = $(Get-Variable -Include "$($CurrentAsset.Name)Task").Value
+        $CurrentVerbose = $(Get-Variable -Include "$($CurrentAsset.Name)Verbose").Value
+        $IconPath = [string] $CurrentAsset.NotificationData.Icon
 
-    # Header for microphone section
-    Write-Host `n "$($CurrentAsset.Name): " `n
-    $microphonePath = $CurrentAsset.AssetPath
-    $CurrentAccessValue = Get-AccessPropertyItem -Path $microphonePath -Verbose $CurrentVerbose
+        if ($CurrentVerbose) {
+            Write-Host `n "$($CurrentAsset.Name): " `n
+        }
 
-    if (
-        (($CurrentAccessValue.ToUpper() -eq 'DENY') -and ($CurrentTask.ToUpper() -eq 'ALLOW')) -or
-        (($CurrentAccessValue.ToUpper() -eq 'ALLOW') -and ($CurrentTask.ToUpper() -eq 'DENY'))
-    ) {
-        # Use the new function for the microphone
-        Set-AccessForItem -Path $microphonePath -Action $CurrentTask -Verbose $CurrentVerbose
-        Send-Notification `
-            -Title $CurrentAsset.NotificationData.Title `
-            -Message $CurrentAsset.NotificationData.Message `
-            -Duration 3000 `
-            -Icon $IconPath
+        $CurrentPath = $CurrentAsset.AssetPath
+        $CurrentAccessValue = Get-AccessPropertyItem -Path $CurrentPath -Verbose $CurrentVerbose
+
+        if (
+            (($CurrentAccessValue.ToUpper() -eq 'DENY') -and ($CurrentTask.ToUpper() -eq 'ALLOW')) -or
+            (($CurrentAccessValue.ToUpper() -eq 'ALLOW') -and ($CurrentTask.ToUpper() -eq 'DENY'))
+        ) {
+            Set-AccessForItem -Path $CurrentPath -Action $CurrentTask -Verbose $CurrentVerbose
+            Send-Notification `
+                -Title $CurrentAsset.NotificationData.Title `
+                -Message $CurrentAsset.NotificationData.Message `
+                -Duration 3000 `
+                -Icon $IconPath
+        }
+    } catch {
+        Return $($error[0].InvocationInfo)
     }
 }
