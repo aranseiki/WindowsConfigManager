@@ -176,3 +176,5 @@ Function Set-AccessForItem {
         }
     }
 }
+
+Export-ModuleMember -Function Disable-AccessItem, Enable-AccessItem, Get-AccessPropertyItem, Set-AccessForItem, Set-AccessItem
