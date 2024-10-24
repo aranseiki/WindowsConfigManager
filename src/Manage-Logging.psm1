@@ -22,3 +22,5 @@ function New-LogFile {
 
     $Data | Out-File -Force -FilePath $LogFile
 }
+
+Export-ModuleMember -Function New-LogFile, Write-LogFile
