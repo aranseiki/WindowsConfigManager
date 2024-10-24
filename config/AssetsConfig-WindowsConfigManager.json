@@ -18,6 +18,15 @@
         }
     },
     {
+        "Name": "MuteAudio",
+        "AssetPath": null,
+        "NotificationData": {
+            "Title": "Audio Changed",
+            "Message": "The Audio configuration has been changed!",
+            "Icon": "C:\\dev\\projects\\WindowsConfigManager\\assets\\information.ico"
+        }
+    },
+    {
         "Name": "Location",
         "AssetPath": "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location",
         "NotificationData": {
