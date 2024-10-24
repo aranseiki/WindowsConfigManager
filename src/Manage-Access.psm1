@@ -177,4 +177,22 @@ Function Set-AccessForItem {
     }
 }
 
-Export-ModuleMember -Function Disable-AccessItem, Enable-AccessItem, Get-AccessPropertyItem, Set-AccessForItem, Set-AccessItem
+function Test-CurrentAccessValue {
+    param (
+        [string]$CurrentAccessValue,
+        [string]$CurrentTask
+    )
+
+    return (
+        (($CurrentAccessValue.ToUpper() -eq 'DENY') -and ($CurrentTask.ToUpper() -eq 'ALLOW')) -or
+        (($CurrentAccessValue.ToUpper() -eq 'ALLOW') -and ($CurrentTask.ToUpper() -eq 'DENY'))
+    )
+}
+
+Export-ModuleMember -Function `
+    Disable-AccessItem, `
+    Enable-AccessItem, `
+    Get-AccessPropertyItem, `
+    Set-AccessForItem, `
+    Set-AccessItem, `
+    Test-CurrentAccessValue
