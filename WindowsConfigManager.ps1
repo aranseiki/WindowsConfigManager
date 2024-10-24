@@ -2,7 +2,7 @@
 Import-Module "$PSScriptRoot/src/Confirm-Parameter.psm1" -Force
 Import-Module "$PSScriptRoot/src/Get-ConfigParameters.psm1" -Force
 Import-Module "$PSScriptRoot/src/Get-UtilityFunctions.psm1" -Force
-Import-Module "$PSScriptRoot/src/Manage-Access.psm1" -Force
+Import-Module "$PSScriptRoot/src/Manage-Configuration.psm1" -Force
 Import-Module "$PSScriptRoot/src/Send-Notification.psm1" -Force
 
 # Configuration file path and filename for storing user configuration settings
@@ -42,21 +42,42 @@ foreach ($CurrentAsset in $AssetsConfigData) {
 
         if ($CurrentVerbose) {
             Write-Host `n "$($CurrentAsset.Name): " `n
+            Write-Host `n "$($CurrentTask) " `n
         }
-
+        
         $CurrentPath = $CurrentAsset.AssetPath
-        $CurrentAccessValue = Get-AccessPropertyItem -Path $CurrentPath -Verbose $CurrentVerbose
 
-        if (
-            (($CurrentAccessValue.ToUpper() -eq 'DENY') -and ($CurrentTask.ToUpper() -eq 'ALLOW')) -or
-            (($CurrentAccessValue.ToUpper() -eq 'ALLOW') -and ($CurrentTask.ToUpper() -eq 'DENY'))
-        ) {
-            Set-AccessForItem -Path $CurrentPath -Action $CurrentTask -Verbose $CurrentVerbose
-            Send-Notification `
-                -Title $CurrentAsset.NotificationData.Title `
-                -Message $CurrentAsset.NotificationData.Message `
-                -Duration 3000 `
-                -Icon $IconPath
+        # Verifica se existe uma função correspondente ao nome do asset
+        $FunctionName = "Set-$($CurrentAsset.Name)Configuration"
+        $returnFunction = $false
+        
+        # Confirma se a função existe
+        if (Get-Command -Name $FunctionName -CommandType Function) {
+            # Executa a função diretamente usando & (call operator)
+            $returnFunction = & $FunctionName `
+                -CurrentPath $CurrentPath `
+                -CurrentTask $CurrentTask `
+                -CurrentVerbose $CurrentVerbose
+
+            if ($returnFunction) {
+                Send-Notification `
+                    -Title $CurrentAsset.NotificationData.Title `
+                    -Message $CurrentAsset.NotificationData.Message `
+                    -Duration 3000 `
+                    -Icon $IconPath
+        
+                if ($CurrentVerbose) {
+                    Write-Host "The function $FunctionName was executed successfully."
+                }
+            }
+        } else {
+            $messageErrorValue = "Function $FunctionName not found."
+
+            if ($CurrentVerbose) {
+                Write-Host $messageErrorValue -ForegroundColor Red
+            }
+
+            Throw $messageErrorValue
         }
     } catch {
         Return $($error[0].InvocationInfo)
