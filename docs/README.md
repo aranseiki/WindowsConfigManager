@@ -1,22 +1,19 @@
 # WindowsConfigManager
 
-
 ## Description
 
 This project focuses on providing an easy way to change Windows configurations. It is an application designed to run constantly, recognizing and applying settings based on changes made to a configuration file. According to these changes, push notifications appear, notifying about new settings.
 
 This project will often be updated with new features.
 
-
 ## Installation
 
 1. Clone this repository.
-2. Execute the following PowerShell file:
+2. Execute the following PowerShell file with administrator privileges:
 
 ```powershell
 WindowsConfigManager.ps1
 ```
-
 
 ## Usage
 
@@ -49,7 +46,6 @@ This will allow usage of microphone in Windows privacy setting.
 ## Testing
 
 This step is still in development.
-
 
 ## Contribution
 
