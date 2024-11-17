@@ -27,17 +27,17 @@ Altere `deny` para `allow` em `task`:
 Antes:
 
 ```ini
-[Microfone]
-Tarefa = deny
-Detalhado = false
+[Microphone]
+Task = deny
+Verbose = false
 ```
 
 Depois:
 
 ```ini
-[Microfone]
-Tarefa = allow
-Detalhado = false
+[Microphone]
+Task = allow
+Verbose = false
 ```
 
 Isso permitirá o uso do microfone na configuração de privacidade do Windows.
