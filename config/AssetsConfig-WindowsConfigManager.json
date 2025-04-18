@@ -2,37 +2,45 @@
     {
         "Name": "Microphone",
         "AssetPath": "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\microphone",
-        "NotificationData": {
-            "Title": "Microphone Changed",
-            "Message": "The Microphone configuration has been changed!",
-            "Icon": "C:\\dev\\projects\\WindowsConfigManager\\assets\\information.ico"
-        }
+        "NotificationData": [
+            {
+                "Title": "Microphone Changed",
+                "Message": "The Microphone configuration has been changed!",
+                "MessageType": "Information"
+            }
+        ]
     },
     {
         "Name": "Camera",
         "AssetPath": "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam",
-        "NotificationData": {
-            "Title": "Camera Changed",
-            "Message": "The Camera configuration has been changed!",
-            "Icon": "C:\\dev\\projects\\WindowsConfigManager\\assets\\information.ico"
-        }
+        "NotificationData": [
+            {
+                "Title": "Camera Changed",
+                "Message": "The Camera configuration has been changed!",
+                "MessageType": "Information"
+            }
+        ]
     },
     {
         "Name": "MuteAudio",
         "AssetPath": null,
-        "NotificationData": {
-            "Title": "Audio Changed",
-            "Message": "The Audio configuration has been changed!",
-            "Icon": "C:\\dev\\projects\\WindowsConfigManager\\assets\\information.ico"
-        }
+        "NotificationData": [
+            {
+                "Title": "Audio Changed",
+                "Message": "The Audio configuration has been changed!",
+                "MessageType": "Information"
+            }
+        ]
     },
     {
         "Name": "Location",
         "AssetPath": "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location",
-        "NotificationData": {
-            "Title": "Location Changed",
-            "Message": "The Location configuration has been changed!",
-            "Icon": "C:\\dev\\projects\\WindowsConfigManager\\assets\\information.ico"
-        }
+        "NotificationData": [
+            {
+                "Title": "Location Changed",
+                "Message": "The Location configuration has been changed!",
+                "MessageType": "Information"
+            }
+        ]
     }
 ]

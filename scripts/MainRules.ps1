@@ -15,6 +15,9 @@ $AssetsConfigFilePath = "$PSScriptRoot/../config"
 $AssetsConfigFileName = 'AssetsConfig-WindowsConfigManager.json'
 $AssetsConfigFile = $AssetsConfigFilePath, $AssetsConfigFileName -join '/'
 
+# Root path for notifications message icon settings
+$AssetsPath = "$PSScriptRoot/../assets"
+
 # Retrieves parameters from the configuration file using the imported function
 $UserConfigData = Get-ConfigParameters -ConfigFilePath $UserConfigFile
 
@@ -31,6 +34,29 @@ foreach ($Variavel in $VariableList) {
 # Retrieves parameters from the configuration file using the imported function
 $AssetsConfigData = Get-Content -Path $AssetsConfigFile -Raw | ConvertFrom-Json
 
+# Set the IconPath configuration variable for each asset in the configuration file.
+foreach ($IconTypeData in $AssetsConfigData) {
+
+    # Access each individual notification configuration entry within the current asset.
+    foreach ($IconNotification in $IconTypeData.NotificationData) {
+
+        # Store the asset name, which is used as a folder name in the icon path structure.
+        [string] $IconName = $IconTypeData.Name
+
+        # Store the notification message type, which determines the icon file name.
+        [string] $IconType = $IconNotification.MessageType
+
+        # Create the expected full path to the icon file based on the asset name and type.
+        $IconPathValue = "$AssetsPath/$IconName/$IconType.ico"
+
+        # Filter the notification entries to match the current message type.
+        # Then add or update the 'IconPath' property with the constructed path.
+        $IconTypeData.NotificationData | `
+            Where-Object { $_.MessageType -eq $IconType } | `
+            Add-Member NoteProperty -Name 'IconPath' -Value $IconPathValue -Force
+    }
+}
+
 # Clear the console to make the output cleaner.
 Clear-Host
 
@@ -38,7 +64,8 @@ foreach ($CurrentAsset in $AssetsConfigData) {
     try {
         $CurrentTask = $(Get-Variable -Include "$($CurrentAsset.Name)Task").Value
         $CurrentVerbose = $(Get-Variable -Include "$($CurrentAsset.Name)Verbose").Value
-        $IconPath = [string] $CurrentAsset.NotificationData.Icon
+        # Set the icon path for the current asset
+        $IconPath = $CurrentAsset.NotificationData.IconPath
 
         if ($CurrentVerbose) {
             Write-Host `n "$($CurrentAsset.Name): " `n
@@ -65,7 +92,7 @@ foreach ($CurrentAsset in $AssetsConfigData) {
                     -Message $CurrentAsset.NotificationData.Message `
                     -Duration 3000 `
                     -Icon $IconPath
-        
+
                 if ($CurrentVerbose) {
                     Write-Host "The function $FunctionName was executed successfully."
                 }
