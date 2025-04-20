@@ -61,26 +61,5 @@
                 "MessageType": "Error"
             }
         ]
-    },
-    {
-        "Name": "MuteAudio",
-        "AssetPath": null,
-        "NotificationData": [
-            {
-                "Title": "Audio Changed",
-                "Message": "The Audio configuration has been changed!",
-                "MessageType": "Information"
-            },
-            {
-                "Title": "Audio Changed",
-                "Message": "The Audio configuration has been changed, but this change has not affected the current configuration!",
-                "MessageType": "Warning"
-            },
-            {
-                "Title": "Audio Changed",
-                "Message": "An error occurred while trying to change the Audio configuration!",
-                "MessageType": "Error"
-            }
-        ]
     }
 ]
