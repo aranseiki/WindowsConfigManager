@@ -1,7 +1,3 @@
-
-Import-Module "$PSScriptRoot/Manage-Access.psm1" -Force
-Import-Module "$PSScriptRoot/Set-SystemVolume.psm1" -Force
-
 function Set-MuteAudioConfiguration {
     param(
         [string]$CurrentTask
