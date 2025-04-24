@@ -2,7 +2,7 @@
 Clear-Host
 
 # Set the root path for the project
-$env:WindowsConfigManagerRootPath = "$PSScriptRoot"
+$env:WindowsConfigManagerRootPath = $PSScriptRoot
 
 # While loop to keep the script running
 while ($true) {
